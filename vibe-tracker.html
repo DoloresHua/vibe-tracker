@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Tracker — Project OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --surface3: #22222f;
+    --border: #2a2a3a;
+    --border2: #3a3a4f;
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #5a5a70;
+    --accent: #7c6dfa;
+    --accent2: #a594fb;
+    --green: #3dd68c;
+    --amber: #f5a623;
+    --red: #ff5f5f;
+    --cyan: #4dd9e8;
+    --pink: #f06292;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    min-height: 100vh;
+  }
+
+  /* Layout */
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    position: fixed;
+    top: 0; left: 0;
+    width: 220px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 10;
+  }
+  .logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-title {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent2);
+    letter-spacing: -0.5px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .nav { padding: 16px 0; flex: 1; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all 0.15s;
+    font-size: 12px;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { color: var(--accent2); border-left-color: var(--accent); background: rgba(124,109,250,0.08); }
+  .nav-icon { font-size: 15px; width: 18px; }
+  .nav-label { font-weight: 500; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* Main content */
+  .main { margin-left: 220px; padding: 32px; min-height: 100vh; }
+
+  /* Page system */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+  .page-title {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -1px;
+  }
+  .page-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--surface3); border-color: var(--accent); }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .btn-danger { border-color: var(--red); color: var(--red); }
+  .btn-danger:hover { background: rgba(255,95,95,0.1); }
+
+  /* Stats row */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-value { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--text); }
+  .stat-change { font-size: 10px; color: var(--green); margin-top: 2px; }
+
+  /* Project cards grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  /* Project card */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .project-card[data-color="purple"]::before { background: var(--accent); }
+  .project-card[data-color="green"]::before { background: var(--green); }
+  .project-card[data-color="amber"]::before { background: var(--amber); }
+  .project-card[data-color="cyan"]::before { background: var(--cyan); }
+  .project-card[data-color="pink"]::before { background: var(--pink); }
+  .project-card:hover { border-color: var(--border2); transform: translateY(-2px); background: var(--surface2); }
+
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .card-name { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--text); }
+  .status-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .status-active { background: rgba(61,214,140,0.15); color: var(--green); }
+  .status-paused { background: rgba(245,166,35,0.15); color: var(--amber); }
+  .status-idea { background: rgba(124,109,250,0.15); color: var(--accent2); }
+  .status-done { background: rgba(90,90,112,0.2); color: var(--text3); }
+
+  .card-desc { font-size: 11px; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 12px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .progress-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--accent2); }
+  .progress-track {
+    height: 5px;
+    background: var(--surface3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+  .project-card[data-color="purple"] .progress-fill { background: var(--accent); }
+  .project-card[data-color="green"] .progress-fill { background: var(--green); }
+  .project-card[data-color="amber"] .progress-fill { background: var(--amber); }
+  .project-card[data-color="cyan"] .progress-fill { background: var(--cyan); }
+  .project-card[data-color="pink"] .progress-fill { background: var(--pink); }
+
+  .card-meta { display: flex; gap: 12px; font-size: 10px; color: var(--text3); }
+  .card-tag { display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Goal milestones */
+  .goals-list { margin-top: 10px; }
+  .goal-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 11px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .goal-item:last-child { border-bottom: none; }
+  .goal-check {
+    width: 14px; height: 14px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+  }
+  .goal-check.done { background: var(--green); border-color: var(--green); color: white; }
+  .goal-done { text-decoration: line-through; color: var(--text3); }
+
+  /* Update log */
+  .log-table { width: 100%; border-collapse: collapse; }
+  .log-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  .log-table td {
+    padding: 12px 14px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .log-table tr:hover td { background: var(--surface2); }
+  .log-project-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    background: rgba(124,109,250,0.15);
+    color: var(--accent2);
+  }
+  .log-date { color: var(--text3); font-size: 11px; }
+  .log-content { color: var(--text); line-height: 1.4; }
+  .log-delta { color: var(--green); font-weight: 600; }
+
+  /* Prompt page */
+  .prompt-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .prompt-header {
+    background: var(--surface2);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .prompt-title { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+  .prompt-body {
+    padding: 16px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text2);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .highlight { color: var(--accent2); font-weight: 500; }
+  .inline-code {
+    background: var(--surface3);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--cyan);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    width: 540px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: translateY(16px);
+    transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-family: var(--display); font-size: 20px; font-weight: 700; margin-bottom: 20px; color: var(--text); }
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-select option { background: var(--surface2); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* Project detail panel */
+  .detail-panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: 440px;
+    height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border2);
+    z-index: 50;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+    padding: 28px;
+  }
+  .detail-panel.open { transform: translateX(0); }
+  .detail-close {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text2); font-size: 16px;
+  }
+  .detail-close:hover { color: var(--text); border-color: var(--border2); }
+  .detail-name { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 6px; margin-right: 40px; }
+  .detail-section { margin-top: 24px; }
+  .detail-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 10px; }
+
+  /* Add goal inline */
+  .add-goal-input {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+  .add-goal-input input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 7px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+  }
+  .add-goal-input input:focus { outline: none; border-color: var(--accent); }
+
+  /* Overview section */
+  .overview-bar-wrap { margin-bottom: 10px; }
+  .overview-project-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 50px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .overview-name { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .overview-bar-track { height: 6px; background: var(--surface3); border-radius: 10px; overflow: hidden; }
+  .overview-bar-fill { height: 100%; border-radius: 10px; }
+  .overview-pct { font-size: 11px; color: var(--text2); text-align: right; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
+  .empty-sub { font-size: 12px; line-height: 1.6; }
+
+  /* Copy toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--green); color: var(--bg);
+    padding: 10px 18px; border-radius: var(--radius);
+    font-size: 12px; font-weight: 600;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.25s;
+    z-index: 200;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+  .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-title">VibeTRACKER</div>
+      <div class="logo-sub">Project OS</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active" onclick="showPage('overview')">
+        <span class="nav-icon">⬡</span>
+        <span class="nav-label">Overview</span>
+      </div>
+      <div class="nav-item" onclick="showPage('projects')">
+        <span class="nav-icon">◫</span>
+        <span class="nav-label">Projects</span>
+      </div>
+      <div class="nav-item" onclick="showPage('log')">
+        <span class="nav-icon">≡</span>
+        <span class="nav-label">Update Log</span>
+      </div>
+      <div class="nav-item" onclick="showPage('prompt')">
+        <span class="nav-icon">⌘</span>
+        <span class="nav-label">Agent Prompt</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      vibe coding tracker v1.0<br>
+      persistent · shareable
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- OVERVIEW PAGE -->
+    <div class="page active" id="page-overview">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Overview</div>
+          <div class="page-sub" id="overview-subtitle">loading...</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddProject()">＋ New Project</button>
+      </div>
+
+      <div class="stats-grid" id="stats-grid"></div>
+
+      <div class="prompt-block">
+        <div class="prompt-header">
+          <span class="prompt-title">📊 Progress Snapshot</span>
+        </div>
+        <div id="overview-bars" style="padding: 20px;"></div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 14px;">Recent Activity</div>
+        <div id="recent-log"></div>
+      </div>
+    </div>
+
+    <!-- PROJECTS PAGE -->
+    <div class="page" id="page-projects">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Projects</div>
+          <div class="page-sub">All your vibe coding ideas</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddProject()">＋ New Project</button>
+      </div>
+      <div class="projects-grid" id="projects-grid"></div>
+    </div>
+
+    <!-- LOG PAGE -->
+    <div class="page" id="page-log">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Update Log</div>
+          <div class="page-sub">Daily progress records</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddLog()">＋ Log Update</button>
+      </div>
+      <div class="prompt-block">
+        <div class="prompt-header"><span class="prompt-title">All Updates</span></div>
+        <div style="overflow-x: auto;">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Project</th>
+                <th>Update</th>
+                <th>Progress Δ</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="log-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT PAGE -->
+    <div class="page" id="page-prompt">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Agent Prompt</div>
+          <div class="page-sub">Standard prompts for Claude Code updates</div>
+        </div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-header">
+          <span class="prompt-title">📋 Progress Update Prompt (copy & use with Claude Code)</span>
+          <button class="btn btn-sm" onclick="copyPrompt('update-prompt')">Copy</button>
+        </div>
+        <div class="prompt-body" id="update-prompt">以下是我的 VibeTRACKER 進度更新 prompt：
+
+<span class="highlight">===== VIBE TRACKER UPDATE PROMPT =====</span>
+
+你是我的 vibe coding 專案助手。請根據以下結構幫我更新我的進度：
+
+<span class="inline-code">PROJECT_NAME:</span> [專案名稱]
+<span class="inline-code">TODAY_UPDATE:</span> [今天做了什麼，1-3 句話]
+<span class="inline-code">BLOCKERS:</span> [遇到的問題或卡關點，沒有就填 none]
+<span class="inline-code">NEXT_STEP:</span> [下一步要做什麼]
+<span class="inline-code">PROGRESS_PCT:</span> [目前整體完成度 0-100]
+<span class="inline-code">GOALS_COMPLETED:</span> [今天完成的 milestone，用逗號分隔]
+
+請回覆一個 JSON 格式，欄位如下：
+{
+  "project": "專案名稱",
+  "date": "YYYY-MM-DD",
+  "summary": "簡短摘要",
+  "update_text": "today_update 的內容",
+  "progress": 數字,
+  "goals_done": ["goal1", "goal2"],
+  "next": "下一步"
+}
+
+<span class="highlight">======================================</span>
+
+使用方式：
+1. 複製這個 prompt
+2. 在 Claude Code / claude.ai 貼上
+3. 填入你的專案資訊
+4. 把回傳的 JSON 貼到 VibeTRACKER 的「＋ Log Update」</div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-header">
+          <span class="prompt-title">🚀 New Project Kickoff Prompt</span>
+          <button class="btn btn-sm" onclick="copyPrompt('kickoff-prompt')">Copy</button>
+        </div>
+        <div class="prompt-body" id="kickoff-prompt">幫我規劃一個新的 vibe coding 專案：
+
+<span class="highlight">===== PROJECT KICKOFF =====</span>
+
+<span class="inline-code">IDEA:</span> [你的想法，一句話描述]
+<span class="inline-code">GOAL:</span> [這個專案的最終目標]
+<span class="inline-code">TECH_STACK:</span> [打算用什麼技術/工具]
+<span class="inline-code">TIMELINE:</span> [預計多久完成，e.g. 2 weeks]
+
+請幫我：
+1. 把這個想法拆成 5-8 個清楚的 milestone
+2. 評估每個 milestone 的難度 (easy / medium / hard)
+3. 建議完成順序
+4. 給這個專案一個簡短有力的 tagline
+
+回覆格式：
+{
+  "name": "專案名稱",
+  "tagline": "一句話說明",
+  "goals": [
+    {"text": "milestone 描述", "difficulty": "easy|medium|hard"}
+  ],
+  "estimated_days": 數字,
+  "tech": ["tech1", "tech2"]
+}
+
+<span class="highlight">===========================</span></div>
+      </div>
+
+      <div class="prompt-block">
+        <div class="prompt-header">
+          <span class="prompt-title">🔍 Blocker Debug Prompt</span>
+          <button class="btn btn-sm" onclick="copyPrompt('debug-prompt')">Copy</button>
+        </div>
+        <div class="prompt-body" id="debug-prompt">我在 vibe coding 專案遇到卡關，請幫我：
+
+<span class="highlight">===== BLOCKER DEBUG =====</span>
+
+<span class="inline-code">PROJECT:</span> [專案名稱]
+<span class="inline-code">WHAT_I_TRIED:</span> [我已經嘗試過的方法]
+<span class="inline-code">ERROR_OR_PROBLEM:</span> [錯誤訊息或問題描述]
+<span class="inline-code">EXPECTED:</span> [我預期它應該做什麼]
+<span class="inline-code">CURRENT_CODE:</span> [相關程式碼片段]
+
+請給我：
+1. 問題可能的原因（列 2-3 個）
+2. 最可能的解法（step by step）
+3. 預防同類問題的建議
+
+<span class="highlight">=========================</span></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Project Detail Panel -->
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-close" onclick="closeDetail()">✕</div>
+  <div id="detail-content"></div>
+</div>
+
+<!-- Add Project Modal -->
+<div class="modal-overlay" id="modal-project">
+  <div class="modal">
+    <div class="modal-title" id="modal-project-title">New Project</div>
+    <div class="form-group">
+      <label class="form-label">Project Name</label>
+      <input class="form-input" id="proj-name" placeholder="e.g. AI Recipe Generator">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="proj-desc" placeholder="What's this project about?"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="proj-status">
+          <option value="idea">💡 Idea</option>
+          <option value="active">🟢 Active</option>
+          <option value="paused">⏸ Paused</option>
+          <option value="done">✅ Done</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color Theme</label>
+        <select class="form-select" id="proj-color">
+          <option value="purple">Purple</option>
+          <option value="green">Green</option>
+          <option value="cyan">Cyan</option>
+          <option value="amber">Amber</option>
+          <option value="pink">Pink</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Progress %</label>
+        <input class="form-input" id="proj-progress" type="number" min="0" max="100" value="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tech Stack (comma separated)</label>
+        <input class="form-input" id="proj-tech" placeholder="React, Supabase, Tailwind">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Goals / Milestones (one per line)</label>
+      <textarea class="form-textarea" id="proj-goals" placeholder="Build authentication&#10;Create main dashboard&#10;Deploy to Vercel"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-project')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Log Modal -->
+<div class="modal-overlay" id="modal-log">
+  <div class="modal">
+    <div class="modal-title">Log Update</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="log-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project</label>
+        <select class="form-select" id="log-project"></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">What did you do today?</label>
+      <textarea class="form-textarea" id="log-text" placeholder="Built the login flow, fixed the API connection issue..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">New Progress %</label>
+        <input class="form-input" id="log-progress" type="number" min="0" max="100" placeholder="e.g. 45">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Next Step</label>
+        <input class="form-input" id="log-next" placeholder="Tomorrow I'll...">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-log')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLog()">Save Log</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✓ Copied!</div>
+
+<script>
+// ===== STORAGE =====
+const STORE_KEY = 'vibetrackerdata_v2';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { projects: [], logs: [] };
+}
+
+function saveData(data) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+let db = loadData();
+let editingProjectId = null;
+let currentDetailId = null;
+
+// ===== NAVIGATION =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  renderPage(name);
+}
+
+function renderPage(name) {
+  if (name === 'overview') renderOverview();
+  if (name === 'projects') renderProjects();
+  if (name === 'log') renderLog();
+}
+
+// ===== OVERVIEW =====
+function renderOverview() {
+  const { projects, logs } = db;
+  const active = projects.filter(p => p.status === 'active').length;
+  const ideas = projects.filter(p => p.status === 'idea').length;
+  const done = projects.filter(p => p.status === 'done').length;
+  const avgProg = projects.length ? Math.round(projects.reduce((a, p) => a + (p.progress || 0), 0) / projects.length) : 0;
+
+  document.getElementById('overview-subtitle').textContent =
+    `${projects.length} projects · ${logs.length} updates logged`;
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Projects</div>
+      <div class="stat-value">${projects.length}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active</div>
+      <div class="stat-value" style="color:var(--green)">${active}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ideas</div>
+      <div class="stat-value" style="color:var(--accent2)">${ideas}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Progress</div>
+      <div class="stat-value" style="color:var(--cyan)">${avgProg}%</div>
+    </div>
+  `;
+
+  const colors = { purple:'#7c6dfa', green:'#3dd68c', amber:'#f5a623', cyan:'#4dd9e8', pink:'#f06292' };
+  const bars = projects.length ? projects.map(p => `
+    <div class="overview-project-row" onclick="openDetail('${p.id}')" style="cursor:pointer">
+      <div class="overview-name">${escHtml(p.name)}</div>
+      <div class="overview-bar-track">
+        <div class="overview-bar-fill" style="width:${p.progress||0}%; background:${colors[p.color]||'#7c6dfa'}"></div>
+      </div>
+      <div class="overview-pct">${p.progress||0}%</div>
+    </div>
+  `).join('') : '<div style="color:var(--text3);font-size:12px;padding:8px 0">No projects yet — create one!</div>';
+
+  document.getElementById('overview-bars').innerHTML = bars;
+
+  const recent = [...logs].sort((a,b) => b.date > a.date ? 1 : -1).slice(0, 5);
+  const proj = id => db.projects.find(p => p.id === id);
+  document.getElementById('recent-log').innerHTML = recent.length ? `
+    <div class="prompt-block">
+      <div class="prompt-header"><span class="prompt-title">Recent Updates</span></div>
+      <div style="overflow-x:auto">
+        <table class="log-table">
+          <thead><tr><th>Date</th><th>Project</th><th>Update</th></tr></thead>
+          <tbody>${recent.map(l => {
+            const p = proj(l.projectId);
+            return `<tr>
+              <td class="log-date">${l.date}</td>
+              <td><span class="log-project-chip">${p ? escHtml(p.name) : '?'}</span></td>
+              <td class="log-content">${escHtml(l.text)}</td>
+            </tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+  ` : '<div style="color:var(--text3);font-size:12px">No updates logged yet.</div>';
+}
+
+// ===== PROJECTS =====
+function renderProjects() {
+  const grid = document.getElementById('projects-grid');
+  if (!db.projects.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">◫</div>
+      <div class="empty-title">No projects yet</div>
+      <div class="empty-sub">Click "New Project" to add your first vibe coding idea.</div>
+    </div>`;
+    return;
+  }
+
+  const statusLabel = { active:'Active', paused:'Paused', idea:'Idea', done:'Done' };
+  const statusClass = { active:'status-active', paused:'status-paused', idea:'status-idea', done:'status-done' };
+
+  grid.innerHTML = db.projects.map(p => {
+    const goals = p.goals || [];
+    const doneGoals = goals.filter(g => g.done).length;
+    return `
+    <div class="project-card" data-color="${p.color||'purple'}" onclick="openDetail('${p.id}')">
+      <div class="card-header">
+        <div class="card-name">${escHtml(p.name)}</div>
+        <span class="status-badge ${statusClass[p.status]||'status-idea'}">${statusLabel[p.status]||'Idea'}</span>
+      </div>
+      <div class="card-desc">${escHtml(p.desc||'No description')}</div>
+      <div class="progress-wrap">
+        <div class="progress-header">
+          <span class="progress-label">Progress</span>
+          <span class="progress-pct">${p.progress||0}%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${p.progress||0}%"></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-tag">◈ ${doneGoals}/${goals.length} goals</span>
+        ${p.tech && p.tech.length ? `<span class="card-tag">⟨⟩ ${p.tech.slice(0,2).map(escHtml).join(', ')}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== PROJECT DETAIL =====
+function openDetail(id) {
+  const p = db.projects.find(x => x.id === id);
+  if (!p) return;
+  currentDetailId = id;
+
+  const statusLabel = { active:'🟢 Active', paused:'⏸ Paused', idea:'💡 Idea', done:'✅ Done' };
+  const colors = { purple:'var(--accent)', green:'var(--green)', amber:'var(--amber)', cyan:'var(--cyan)', pink:'var(--pink)' };
+  const color = colors[p.color] || 'var(--accent)';
+
+  const logs = db.logs.filter(l => l.projectId === id).sort((a,b) => b.date > a.date ? 1 : -1);
+
+  const goalsList = (p.goals||[]).map((g, i) => `
+    <div class="goal-item" onclick="toggleGoal('${id}', ${i})">
+      <div class="goal-check ${g.done ? 'done' : ''}">${g.done ? '✓' : ''}</div>
+      <span class="${g.done ? 'goal-done' : ''}">${escHtml(g.text)}</span>
+    </div>
+  `).join('');
+
+  const recentLogs = logs.slice(0,5).map(l => `
+    <div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:11px; color:var(--text2); line-height:1.5">
+      <span style="color:var(--text3)">${l.date}</span>
+      ${l.progress !== undefined ? `<span class="log-delta" style="margin-left:6px">→${l.progress}%</span>` : ''}
+      <div style="margin-top:3px">${escHtml(l.text)}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('detail-content').innerHTML = `
+    <div style="width:100%; height:3px; background:${color}; border-radius:4px; margin-bottom:20px"></div>
+    <div class="detail-name">${escHtml(p.name)}</div>
+    <div style="margin-bottom:16px; display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+      <span style="font-size:12px; color:var(--text2)">${statusLabel[p.status]||'Idea'}</span>
+      ${p.tech && p.tech.length ? p.tech.map(t => `<span class="tag">${escHtml(t)}</span>`).join('') : ''}
+    </div>
+    <div style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:16px">${escHtml(p.desc||'')}</div>
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label">Overall Progress</span>
+        <span class="progress-pct" style="color:${color}">${p.progress||0}%</span>
+      </div>
+      <div class="progress-track" style="height:8px">
+        <div class="progress-fill" style="width:${p.progress||0}%; background:${color}"></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Goals & Milestones</div>
+      <div class="goals-list">${goalsList || '<div style="color:var(--text3);font-size:11px">No goals added</div>'}</div>
+      <div class="add-goal-input">
+        <input id="new-goal-text" placeholder="Add new goal..." onkeydown="if(event.key==='Enter')addGoal('${id}')">
+        <button class="btn btn-sm btn-primary" onclick="addGoal('${id}')">Add</button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Recent Updates (${logs.length} total)</div>
+      ${recentLogs || '<div style="color:var(--text3);font-size:11px">No updates logged yet</div>'}
+    </div>
+
+    <div class="detail-section" style="display:flex; gap:8px; flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="openEditProject('${id}')">✏ Edit</button>
+      <button class="btn btn-sm btn-primary" onclick="openAddLog('${id}')">＋ Log Update</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteProject('${id}')">✕ Delete</button>
+    </div>
+  `;
+
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('open');
+  currentDetailId = null;
+}
+
+function toggleGoal(projectId, index) {
+  const p = db.projects.find(x => x.id === projectId);
+  if (!p || !p.goals) return;
+  p.goals[index].done = !p.goals[index].done;
+  saveData(db);
+  openDetail(projectId);
+  renderProjects();
+}
+
+function addGoal(projectId) {
+  const input = document.getElementById('new-goal-text');
+  const text = input.value.trim();
+  if (!text) return;
+  const p = db.projects.find(x => x.id === projectId);
+  if (!p) return;
+  if (!p.goals) p.goals = [];
+  p.goals.push({ text, done: false });
+  saveData(db);
+  input.value = '';
+  openDetail(projectId);
+  renderProjects();
+}
+
+// ===== LOG =====
+function renderLog() {
+  const tbody = document.getElementById('log-tbody');
+  const sorted = [...db.logs].sort((a,b) => b.date > a.date ? 1 : -1);
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text3)">No updates logged yet. Click "+ Log Update" to start!</td></tr>`;
+    return;
+  }
+  const proj = id => db.projects.find(p => p.id === id);
+  tbody.innerHTML = sorted.map(l => {
+    const p = proj(l.projectId);
+    return `<tr>
+      <td class="log-date">${l.date}</td>
+      <td><span class="log-project-chip">${p ? escHtml(p.name) : 'Unknown'}</span></td>
+      <td class="log-content">${escHtml(l.text)}</td>
+      <td class="log-delta">${l.progress !== undefined ? `${l.progress}%` : '—'}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteLog('${l.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== MODALS =====
+function openAddProject() {
+  editingProjectId = null;
+  document.getElementById('modal-project-title').textContent = 'New Project';
+  document.getElementById('proj-name').value = '';
+  document.getElementById('proj-desc').value = '';
+  document.getElementById('proj-status').value = 'active';
+  document.getElementById('proj-color').value = 'purple';
+  document.getElementById('proj-progress').value = '0';
+  document.getElementById('proj-tech').value = '';
+  document.getElementById('proj-goals').value = '';
+  document.getElementById('modal-project').classList.add('open');
+}
+
+function openEditProject(id) {
+  const p = db.projects.find(x => x.id === id);
+  if (!p) return;
+  editingProjectId = id;
+  document.getElementById('modal-project-title').textContent = 'Edit Project';
+  document.getElementById('proj-name').value = p.name || '';
+  document.getElementById('proj-desc').value = p.desc || '';
+  document.getElementById('proj-status').value = p.status || 'idea';
+  document.getElementById('proj-color').value = p.color || 'purple';
+  document.getElementById('proj-progress').value = p.progress || 0;
+  document.getElementById('proj-tech').value = (p.tech||[]).join(', ');
+  document.getElementById('proj-goals').value = (p.goals||[]).map(g => g.text).join('\n');
+  document.getElementById('modal-project').classList.add('open');
+}
+
+function saveProject() {
+  const name = document.getElementById('proj-name').value.trim();
+  if (!name) { alert('Project name is required'); return; }
+
+  const goalsRaw = document.getElementById('proj-goals').value.trim();
+  const newGoalTexts = goalsRaw ? goalsRaw.split('\n').map(l => l.trim()).filter(Boolean) : [];
+
+  if (editingProjectId) {
+    const p = db.projects.find(x => x.id === editingProjectId);
+    const existingGoals = p.goals || [];
+    // Merge: keep existing with done status, add new
+    const merged = newGoalTexts.map(text => {
+      const existing = existingGoals.find(g => g.text === text);
+      return existing || { text, done: false };
+    });
+    p.name = name;
+    p.desc = document.getElementById('proj-desc').value.trim();
+    p.status = document.getElementById('proj-status').value;
+    p.color = document.getElementById('proj-color').value;
+    p.progress = parseInt(document.getElementById('proj-progress').value) || 0;
+    p.tech = document.getElementById('proj-tech').value.split(',').map(t=>t.trim()).filter(Boolean);
+    p.goals = merged;
+  } else {
+    db.projects.push({
+      id: 'p_' + Date.now(),
+      name,
+      desc: document.getElementById('proj-desc').value.trim(),
+      status: document.getElementById('proj-status').value,
+      color: document.getElementById('proj-color').value,
+      progress: parseInt(document.getElementById('proj-progress').value) || 0,
+      tech: document.getElementById('proj-tech').value.split(',').map(t=>t.trim()).filter(Boolean),
+      goals: newGoalTexts.map(text => ({ text, done: false })),
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  saveData(db);
+  closeModal('modal-project');
+  renderProjects();
+  renderOverview();
+  if (currentDetailId) openDetail(currentDetailId);
+}
+
+function openAddLog(projectId) {
+  const sel = document.getElementById('log-project');
+  sel.innerHTML = db.projects.map(p =>
+    `<option value="${p.id}" ${p.id === projectId ? 'selected' : ''}>${escHtml(p.name)}</option>`
+  ).join('');
+  document.getElementById('log-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('log-text').value = '';
+  document.getElementById('log-progress').value = '';
+  document.getElementById('log-next').value = '';
+  closeModal('modal-project');
+  document.getElementById('modal-log').classList.add('open');
+}
+
+function saveLog() {
+  const projectId = document.getElementById('log-project').value;
+  const text = document.getElementById('log-text').value.trim();
+  const date = document.getElementById('log-date').value;
+  if (!text || !projectId || !date) { alert('Please fill in all fields'); return; }
+
+  const progress = document.getElementById('log-progress').value;
+  const next = document.getElementById('log-next').value.trim();
+
+  const log = {
+    id: 'l_' + Date.now(),
+    projectId,
+    date,
+    text,
+    next,
+    progress: progress !== '' ? parseInt(progress) : undefined
+  };
+
+  db.logs.push(log);
+
+  // Update project progress if provided
+  if (progress !== '') {
+    const p = db.projects.find(x => x.id === projectId);
+    if (p) p.progress = parseInt(progress);
+  }
+
+  saveData(db);
+  closeModal('modal-log');
+  renderLog();
+  renderOverview();
+  renderProjects();
+  if (currentDetailId) openDetail(currentDetailId);
+}
+
+function deleteProject(id) {
+  if (!confirm('Delete this project? This cannot be undone.')) return;
+  db.projects = db.projects.filter(p => p.id !== id);
+  db.logs = db.logs.filter(l => l.projectId !== id);
+  saveData(db);
+  closeDetail();
+  renderProjects();
+  renderOverview();
+}
+
+function deleteLog(id) {
+  if (!confirm('Delete this log entry?')) return;
+  db.logs = db.logs.filter(l => l.id !== id);
+  saveData(db);
+  renderLog();
+  renderOverview();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ===== PROMPT COPY =====
+function copyPrompt(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  });
+}
+
+// ===== UTILS =====
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== INIT =====
+renderOverview();
+</script>
+</body>
+</html>
