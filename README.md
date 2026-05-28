@@ -8,7 +8,7 @@ Personal vibe coding project tracker — progress bars, daily logs &amp; agent p
 
 VibeTRACKER is a single-page dashboard for managing vibe coding projects. Built for people who have too many ideas scattered everywhere and need one place to organise, track, and share their coding journey.
 
-**Live demo:** `https://你的帳號.github.io/vibe-tracker`
+**Live demo:** `https://DoloresHua.github.io/vibe-tracker`
 
 ---
 
