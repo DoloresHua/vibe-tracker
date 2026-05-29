@@ -3,511 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibe Tracker — Project OS</title>
+<title>VibeTRACKER — Project OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a24;
-    --surface3: #22222f;
-    --border: #2a2a3a;
-    --border2: #3a3a4f;
-    --text: #e8e8f0;
-    --text2: #9090a8;
-    --text3: #5a5a70;
-    --accent: #7c6dfa;
-    --accent2: #a594fb;
-    --green: #3dd68c;
-    --amber: #f5a623;
-    --red: #ff5f5f;
-    --cyan: #4dd9e8;
-    --pink: #f06292;
-    --radius: 10px;
-    --radius-lg: 16px;
-    --mono: 'JetBrains Mono', monospace;
-    --display: 'Syne', sans-serif;
+    --bg: #f6f8fa;
+    --surface: #ffffff;
+    --surface2: #f6f8fa;
+    --border: #d0d7de;
+    --border2: #afb8c1;
+    --text: #1f2328;
+    --text2: #636c76;
+    --text3: #9198a1;
+    --accent: #0969da;
+    --accent-bg: #ddf4ff;
+    --accent-text: #0550ae;
+    --green: #1a7f37;
+    --green-bg: #dafbe1;
+    --amber: #9a6700;
+    --amber-bg: #fff8c5;
+    --red: #cf222e;
+    --red-bg: #ffebe9;
+    --purple: #8250df;
+    --purple-bg: #fbefff;
+    --radius: 6px;
+    --radius-lg: 8px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sidebar-width: 256px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    min-height: 100vh;
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; }
 
   /* Layout */
-  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  .app { display: flex; min-height: 100vh; }
 
   /* Sidebar */
   .sidebar {
+    width: var(--sidebar-width);
     background: var(--surface);
     border-right: 1px solid var(--border);
-    padding: 24px 0;
-    position: fixed;
-    top: 0; left: 0;
-    width: 220px;
+    position: fixed; top: 0; left: 0;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
     overflow-y: auto;
     z-index: 10;
   }
   .logo {
-    padding: 0 20px 24px;
+    padding: 16px;
     border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
   }
-  .logo-title {
-    font-family: var(--display);
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--accent2);
-    letter-spacing: -0.5px;
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: var(--text);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: white; font-weight: 600;
   }
-  .logo-sub {
-    font-size: 10px;
-    color: var(--text3);
-    margin-top: 2px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .nav { padding: 16px 0; flex: 1; }
+  .logo-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .logo-sub { font-size: 11px; color: var(--text3); }
+
+  .nav { padding: 8px 0; flex: 1; }
+  .nav-section { padding: 16px 16px 4px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
   .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-    color: var(--text2);
-    transition: all 0.15s;
-    font-size: 12px;
-    border-left: 2px solid transparent;
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 16px; cursor: pointer;
+    color: var(--text2); font-size: 14px;
+    border-radius: 0;
+    transition: background 0.1s;
+    border-left: 3px solid transparent;
   }
   .nav-item:hover { background: var(--surface2); color: var(--text); }
-  .nav-item.active { color: var(--accent2); border-left-color: var(--accent); background: rgba(124,109,250,0.08); }
-  .nav-icon { font-size: 15px; width: 18px; }
-  .nav-label { font-weight: 500; }
+  .nav-item.active { background: var(--surface2); color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+  .nav-icon { font-size: 16px; width: 18px; text-align: center; }
 
   .sidebar-footer {
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-top: 1px solid var(--border);
-    font-size: 10px;
-    color: var(--text3);
+    font-size: 11px; color: var(--text3);
   }
 
-  /* Main content */
-  .main { margin-left: 220px; padding: 32px; min-height: 100vh; }
+  /* Main */
+  .main { margin-left: var(--sidebar-width); flex: 1; padding: 24px 32px; max-width: 1100px; }
 
-  /* Page system */
+  /* Page */
   .page { display: none; }
   .page.active { display: block; }
 
-  /* Header */
+  /* Page header */
   .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 32px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
   }
-  .page-title {
-    font-family: var(--display);
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -1px;
-  }
-  .page-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .page-title { font-size: 20px; font-weight: 600; color: var(--text); }
+  .page-sub { font-size: 13px; color: var(--text3); margin-top: 2px; }
 
   /* Buttons */
   .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: var(--radius);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid var(--border2);
-    background: var(--surface2);
-    color: var(--text);
-    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: var(--radius);
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text);
+    transition: all 0.1s; line-height: 20px;
   }
-  .btn:hover { background: var(--surface3); border-color: var(--accent); }
-  .btn-primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); }
-  .btn-sm { padding: 5px 10px; font-size: 11px; }
-  .btn-danger { border-color: var(--red); color: var(--red); }
-  .btn-danger:hover { background: rgba(255,95,95,0.1); }
+  .btn:hover { background: #f3f4f6; border-color: var(--border2); }
+  .btn:active { background: #ebecf0; }
+  .btn-primary { background: #1f883d; border-color: rgba(31,136,61,0.4); color: white; }
+  .btn-primary:hover { background: #1a7f37; }
+  .btn-sm { padding: 3px 10px; font-size: 12px; }
+  .btn-danger { color: var(--red); border-color: var(--border); }
+  .btn-danger:hover { background: var(--red-bg); border-color: rgba(207,34,46,0.4); }
 
-  /* Stats row */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 28px;
-  }
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
   .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px;
   }
-  .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .stat-value { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--text); }
-  .stat-change { font-size: 10px; color: var(--green); margin-top: 2px; }
+  .stat-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  .stat-value { font-size: 24px; font-weight: 600; color: var(--text); }
 
-  /* Project cards grid */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 16px;
-  }
-
-  /* Project card */
-  .project-card {
+  /* Section box */
+  .box {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
+    margin-bottom: 16px;
     overflow: hidden;
+  }
+  .box-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .box-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .box-body { padding: 16px; }
+
+  /* Project cards */
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .project-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px;
+    cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative; overflow: hidden;
   }
   .project-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
+    content: ''; position: absolute; top: 0; left: 0;
     width: 100%; height: 3px;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
-  .project-card[data-color="purple"]::before { background: var(--accent); }
-  .project-card[data-color="green"]::before { background: var(--green); }
-  .project-card[data-color="amber"]::before { background: var(--amber); }
-  .project-card[data-color="cyan"]::before { background: var(--cyan); }
-  .project-card[data-color="pink"]::before { background: var(--pink); }
-  .project-card:hover { border-color: var(--border2); transform: translateY(-2px); background: var(--surface2); }
+  .project-card[data-color="purple"]::before { background: #8250df; }
+  .project-card[data-color="green"]::before { background: #1a7f37; }
+  .project-card[data-color="amber"]::before { background: #9a6700; }
+  .project-card[data-color="cyan"]::before { background: #0969da; }
+  .project-card[data-color="pink"]::before { background: #bf3989; }
+  .project-card:hover { border-color: var(--border2); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 
-  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .card-name { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--text); }
-  .status-badge {
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .status-active { background: rgba(61,214,140,0.15); color: var(--green); }
-  .status-paused { background: rgba(245,166,35,0.15); color: var(--amber); }
-  .status-idea { background: rgba(124,109,250,0.15); color: var(--accent2); }
-  .status-done { background: rgba(90,90,112,0.2); color: var(--text3); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .card-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card-desc { font-size: 13px; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
 
-  .card-desc { font-size: 11px; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
+  /* Badges */
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; border: 1px solid transparent; }
+  .badge-active { background: var(--green-bg); color: var(--green); border-color: rgba(26,127,55,0.2); }
+  .badge-paused { background: var(--amber-bg); color: var(--amber); border-color: rgba(154,103,0,0.2); }
+  .badge-idea { background: var(--purple-bg); color: var(--purple); border-color: rgba(130,80,223,0.2); }
+  .badge-done { background: var(--surface2); color: var(--text3); border-color: var(--border); }
 
-  /* Progress bar */
+  /* Progress */
   .progress-wrap { margin-bottom: 12px; }
-  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .progress-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-  .progress-pct { font-size: 12px; font-weight: 600; color: var(--accent2); }
-  .progress-track {
-    height: 5px;
-    background: var(--surface3);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.5s ease;
-  }
-  .project-card[data-color="purple"] .progress-fill { background: var(--accent); }
-  .project-card[data-color="green"] .progress-fill { background: var(--green); }
-  .project-card[data-color="amber"] .progress-fill { background: var(--amber); }
-  .project-card[data-color="cyan"] .progress-fill { background: var(--cyan); }
-  .project-card[data-color="pink"] .progress-fill { background: var(--pink); }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .progress-label { font-size: 12px; color: var(--text2); font-weight: 500; }
+  .progress-pct { font-size: 12px; font-weight: 600; color: var(--text); }
+  .progress-track { height: 6px; background: var(--surface2); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-fill { height: 100%; border-radius: 10px; background: var(--accent); transition: width 0.4s; }
+  .project-card[data-color="purple"] .progress-fill { background: #8250df; }
+  .project-card[data-color="green"] .progress-fill { background: #1a7f37; }
+  .project-card[data-color="amber"] .progress-fill { background: #9a6700; }
+  .project-card[data-color="cyan"] .progress-fill { background: #0969da; }
+  .project-card[data-color="pink"] .progress-fill { background: #bf3989; }
 
-  .card-meta { display: flex; gap: 12px; font-size: 10px; color: var(--text3); }
-  .card-tag { display: inline-flex; align-items: center; gap: 4px; }
+  .card-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text3); }
 
-  /* Goal milestones */
-  .goals-list { margin-top: 10px; }
-  .goal-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 0;
-    font-size: 11px;
-    color: var(--text2);
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
+  /* Overview bars */
+  .overview-project-row {
+    display: grid; grid-template-columns: 160px 1fr 48px;
+    align-items: center; gap: 12px; margin-bottom: 12px;
+    cursor: pointer; padding: 4px 0;
   }
+  .overview-project-row:hover .overview-name { color: var(--accent); }
+  .overview-name { font-size: 13px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .overview-bar-track { height: 8px; background: var(--surface2); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .overview-bar-fill { height: 100%; border-radius: 10px; }
+  .overview-pct { font-size: 12px; color: var(--text2); text-align: right; font-weight: 500; }
+
+  /* Log table */
+  .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .log-table th { text-align: left; padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text2); border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .log-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .log-table tr:last-child td { border-bottom: none; }
+  .log-table tr:hover td { background: var(--surface2); }
+  .log-date { color: var(--text3); font-size: 12px; white-space: nowrap; }
+  .log-content { color: var(--text); line-height: 1.4; }
+  .log-delta { color: var(--green); font-weight: 600; white-space: nowrap; }
+  .log-chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; background: var(--accent-bg); color: var(--accent-text); border: 1px solid rgba(9,105,218,0.2); white-space: nowrap; }
+
+  /* Goals */
+  .goal-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; color: var(--text); }
   .goal-item:last-child { border-bottom: none; }
-  .goal-check {
-    width: 14px; height: 14px;
-    border: 1px solid var(--border2);
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    font-size: 10px;
-  }
+  .goal-item:hover { color: var(--accent); }
+  .goal-check { width: 16px; height: 16px; border: 1px solid var(--border2); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; background: var(--surface); }
   .goal-check.done { background: var(--green); border-color: var(--green); color: white; }
   .goal-done { text-decoration: line-through; color: var(--text3); }
 
-  /* Update log */
-  .log-table { width: 100%; border-collapse: collapse; }
-  .log-table th {
-    text-align: left;
-    padding: 10px 14px;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text3);
-    border-bottom: 1px solid var(--border);
-    font-weight: 500;
-  }
-  .log-table td {
-    padding: 12px 14px;
-    font-size: 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  .log-table tr:hover td { background: var(--surface2); }
-  .log-project-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 500;
-    background: rgba(124,109,250,0.15);
-    color: var(--accent2);
-  }
-  .log-date { color: var(--text3); font-size: 11px; }
-  .log-content { color: var(--text); line-height: 1.4; }
-  .log-delta { color: var(--green); font-weight: 600; }
+  /* Prompt */
+  .prompt-body { padding: 16px; font-size: 13px; line-height: 1.8; color: var(--text2); white-space: pre-wrap; word-break: break-word; font-family: 'SFMono-Regular', Consolas, monospace; background: var(--surface2); }
+  .highlight { color: var(--accent); font-weight: 600; }
+  .inline-code { background: var(--surface); border: 1px solid var(--border); padding: 1px 6px; border-radius: 4px; font-size: 12px; color: var(--purple); }
 
-  /* Prompt page */
-  .prompt-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .prompt-header {
-    background: var(--surface2);
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .prompt-title { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
-  .prompt-body {
-    padding: 16px;
-    font-size: 12px;
-    line-height: 1.8;
-    color: var(--text2);
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .highlight { color: var(--accent2); font-weight: 500; }
-  .inline-code {
-    background: var(--surface3);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-    color: var(--cyan);
-  }
-
-  /* Modal */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 100;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    width: 540px;
-    max-height: 85vh;
-    overflow-y: auto;
-    transform: translateY(16px);
-    transition: transform 0.2s;
-  }
-  .modal-overlay.open .modal { transform: translateY(0); }
-  .modal-title { font-family: var(--display); font-size: 20px; font-weight: 700; margin-bottom: 20px; color: var(--text); }
-  .form-group { margin-bottom: 16px; }
-  .form-label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .form-input, .form-select, .form-textarea {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 9px 12px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text);
-    transition: border-color 0.15s;
-  }
-  .form-input:focus, .form-select:focus, .form-textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-  .form-textarea { resize: vertical; min-height: 80px; }
-  .form-select option { background: var(--surface2); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-
-  /* Project detail panel */
+  /* Detail panel */
   .detail-panel {
-    position: fixed;
-    top: 0; right: 0;
-    width: 440px;
-    height: 100vh;
-    background: var(--surface);
-    border-left: 1px solid var(--border2);
-    z-index: 50;
-    transform: translateX(100%);
-    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
-    overflow-y: auto;
-    padding: 28px;
+    position: fixed; top: 0; right: 0;
+    width: 420px; height: 100vh;
+    background: var(--surface); border-left: 1px solid var(--border);
+    z-index: 50; transform: translateX(100%);
+    transition: transform 0.2s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto; padding: 20px;
   }
   .detail-panel.open { transform: translateX(0); }
-  .detail-close {
-    position: absolute; top: 20px; right: 20px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--text2); font-size: 16px;
-  }
+  .detail-close { position: absolute; top: 16px; right: 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: var(--text2); }
   .detail-close:hover { color: var(--text); border-color: var(--border2); }
-  .detail-name { font-family: var(--display); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 6px; margin-right: 40px; }
-  .detail-section { margin-top: 24px; }
-  .detail-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 10px; }
+  .detail-name { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; margin-right: 36px; }
+  .detail-section { margin-top: 20px; }
+  .detail-section-title { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 
-  /* Add goal inline */
-  .add-goal-input {
-    display: flex; gap: 8px; margin-top: 10px;
-  }
-  .add-goal-input input {
-    flex: 1;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 7px 10px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text);
-  }
-  .add-goal-input input:focus { outline: none; border-color: var(--accent); }
+  .add-goal-input { display: flex; gap: 8px; margin-top: 10px; }
+  .add-goal-input input { flex: 1; padding: 5px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font); font-size: 13px; color: var(--text); background: var(--surface); }
+  .add-goal-input input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(9,105,218,0.1); }
 
-  /* Overview section */
-  .overview-bar-wrap { margin-bottom: 10px; }
-  .overview-project-row {
-    display: grid;
-    grid-template-columns: 140px 1fr 50px;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-  .overview-name { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .overview-bar-track { height: 6px; background: var(--surface3); border-radius: 10px; overflow: hidden; }
-  .overview-bar-fill { height: 100%; border-radius: 10px; }
-  .overview-pct { font-size: 11px; color: var(--text2); text-align: right; }
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; width: 520px; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(8px); transition: transform 0.15s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--text); padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .form-input, .form-select, .form-textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 10px; font-family: var(--font); font-size: 13px; color: var(--text); background: var(--surface); transition: border-color 0.1s; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(9,105,218,0.1); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  /* Tag */
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); display: inline-block; }
 
   /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text3);
-  }
-  .empty-icon { font-size: 36px; margin-bottom: 12px; }
-  .empty-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
-  .empty-sub { font-size: 12px; line-height: 1.6; }
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text3); }
+  .empty-icon { font-size: 32px; margin-bottom: 10px; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+  .empty-sub { font-size: 13px; }
 
-  /* Copy toast */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: var(--green); color: var(--bg);
-    padding: 10px 18px; border-radius: var(--radius);
-    font-size: 12px; font-weight: 600;
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.25s;
-    z-index: 200;
-  }
+  /* Notes textarea */
+  .notes-area { width:100%; border:1px solid var(--border); border-radius:var(--radius); padding:8px 10px; font-family:var(--font); font-size:13px; color:var(--text); background:var(--surface); resize:vertical; min-height:90px; line-height:1.6; transition:border-color 0.1s; }
+  .notes-area:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(9,105,218,0.1); }
+  .notes-save-row { display:flex; justify-content:flex-end; margin-top:6px; }
+
+  /* Links */
+  .link-item { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .link-item:last-child { border-bottom:none; }
+  .link-item a { color:var(--accent); text-decoration:none; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .link-item a:hover { text-decoration:underline; }
+  .link-label { font-size:11px; color:var(--text3); width:60px; flex-shrink:0; }
+  .add-link-row { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .add-link-row input { flex:1; min-width:100px; padding:5px 8px; border:1px solid var(--border); border-radius:var(--radius); font-family:var(--font); font-size:12px; color:var(--text); background:var(--surface); }
+  .add-link-row input:focus { outline:none; border-color:var(--accent); }
+
+  /* Kanban */
+  .kanban-wrap { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .kanban-col { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; min-height:80px; }
+  .kanban-col-title { font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .kanban-item { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:6px 8px; font-size:12px; color:var(--text); margin-bottom:6px; cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start; gap:4px; line-height:1.4; }
+  .kanban-item:hover { border-color:var(--border2); }
+  .kanban-item-del { color:var(--text3); font-size:11px; cursor:pointer; flex-shrink:0; }
+  .kanban-item-del:hover { color:var(--red); }
+  .kanban-add { width:100%; border:1px dashed var(--border); border-radius:4px; padding:5px 8px; font-family:var(--font); font-size:12px; color:var(--text3); background:transparent; cursor:pointer; text-align:left; }
+  .kanban-add:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-bg); }
+
+  /* Prompt button */
+  .prompt-copy-btn { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:var(--radius); font-family:var(--font); font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--text2); width:100%; justify-content:center; transition:all 0.1s; }
+  .prompt-copy-btn:hover { background:var(--accent-bg); border-color:var(--accent); color:var(--accent); }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; transform: translateY(60px); opacity: 0; transition: all 0.2s; z-index: 200; }
   .toast.show { transform: translateY(0); opacity: 1; }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
-
-  .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
-
-  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text2);
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 </style>
 </head>
 <body>
 
 <div class="app">
-  <!-- Sidebar -->
   <nav class="sidebar">
     <div class="logo">
-      <div class="logo-title">VibeTRACKER</div>
-      <div class="logo-sub">Project OS</div>
+      <div class="logo-icon">V</div>
+      <div>
+        <div class="logo-title">VibeTRACKER</div>
+        <div class="logo-sub">Project OS</div>
+      </div>
     </div>
     <div class="nav">
-      <div class="nav-item active" onclick="showPage('overview')">
-        <span class="nav-icon">⬡</span>
-        <span class="nav-label">Overview</span>
+      <div class="nav-section">Navigation</div>
+      <div class="nav-item active" onclick="showPage('overview', event)">
+        <span class="nav-icon">⊞</span> Overview
       </div>
-      <div class="nav-item" onclick="showPage('projects')">
-        <span class="nav-icon">◫</span>
-        <span class="nav-label">Projects</span>
+      <div class="nav-item" onclick="showPage('projects', event)">
+        <span class="nav-icon">◱</span> Projects
       </div>
-      <div class="nav-item" onclick="showPage('log')">
-        <span class="nav-icon">≡</span>
-        <span class="nav-label">Update Log</span>
+      <div class="nav-item" onclick="showPage('log', event)">
+        <span class="nav-icon">≡</span> Update Log
       </div>
-      <div class="nav-item" onclick="showPage('prompt')">
-        <span class="nav-icon">⌘</span>
-        <span class="nav-label">Agent Prompt</span>
+      <div class="nav-item" onclick="showPage('prompt', event)">
+        <span class="nav-icon">⌘</span> Agent Prompt
       </div>
     </div>
-    <div class="sidebar-footer">
-      vibe coding tracker v1.0<br>
-      persistent · shareable
-    </div>
+    <div class="sidebar-footer">vibe coding tracker v1.0 · persistent & shareable</div>
   </nav>
 
-  <!-- Main -->
   <main class="main">
 
-    <!-- OVERVIEW PAGE -->
+    <!-- OVERVIEW -->
     <div class="page active" id="page-overview">
       <div class="page-header">
         <div>
@@ -516,23 +347,18 @@
         </div>
         <button class="btn btn-primary" onclick="openAddProject()">＋ New Project</button>
       </div>
-
       <div class="stats-grid" id="stats-grid"></div>
-
-      <div class="prompt-block">
-        <div class="prompt-header">
-          <span class="prompt-title">📊 Progress Snapshot</span>
-        </div>
-        <div id="overview-bars" style="padding: 20px;"></div>
+      <div class="box">
+        <div class="box-header"><span class="box-title">Progress Snapshot</span></div>
+        <div class="box-body" id="overview-bars"></div>
       </div>
-
-      <div style="margin-top: 24px;">
-        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 14px;">Recent Activity</div>
+      <div style="margin-top:16px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Recent Activity</div>
         <div id="recent-log"></div>
       </div>
     </div>
 
-    <!-- PROJECTS PAGE -->
+    <!-- PROJECTS -->
     <div class="page" id="page-projects">
       <div class="page-header">
         <div>
@@ -544,7 +370,7 @@
       <div class="projects-grid" id="projects-grid"></div>
     </div>
 
-    <!-- LOG PAGE -->
+    <!-- LOG -->
     <div class="page" id="page-log">
       <div class="page-header">
         <div>
@@ -553,26 +379,18 @@
         </div>
         <button class="btn btn-primary" onclick="openAddLog()">＋ Log Update</button>
       </div>
-      <div class="prompt-block">
-        <div class="prompt-header"><span class="prompt-title">All Updates</span></div>
-        <div style="overflow-x: auto;">
+      <div class="box">
+        <div class="box-header"><span class="box-title">All Updates</span></div>
+        <div style="overflow-x:auto">
           <table class="log-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Project</th>
-                <th>Update</th>
-                <th>Progress Δ</th>
-                <th></th>
-              </tr>
-            </thead>
+            <thead><tr><th>Date</th><th>Project</th><th>Update</th><th>Progress</th><th></th></tr></thead>
             <tbody id="log-tbody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- PROMPT PAGE -->
+    <!-- PROMPT -->
     <div class="page" id="page-prompt">
       <div class="page-header">
         <div>
@@ -581,9 +399,9 @@
         </div>
       </div>
 
-      <div class="prompt-block">
-        <div class="prompt-header">
-          <span class="prompt-title">📋 Progress Update Prompt (copy & use with Claude Code)</span>
+      <div class="box">
+        <div class="box-header">
+          <span class="box-title">📋 Progress Update Prompt</span>
           <button class="btn btn-sm" onclick="copyPrompt('update-prompt')">Copy</button>
         </div>
         <div class="prompt-body" id="update-prompt">以下是我的 VibeTRACKER 進度更新 prompt：
@@ -619,9 +437,9 @@
 4. 把回傳的 JSON 貼到 VibeTRACKER 的「＋ Log Update」</div>
       </div>
 
-      <div class="prompt-block">
-        <div class="prompt-header">
-          <span class="prompt-title">🚀 New Project Kickoff Prompt</span>
+      <div class="box">
+        <div class="box-header">
+          <span class="box-title">🚀 New Project Kickoff Prompt</span>
           <button class="btn btn-sm" onclick="copyPrompt('kickoff-prompt')">Copy</button>
         </div>
         <div class="prompt-body" id="kickoff-prompt">幫我規劃一個新的 vibe coding 專案：
@@ -633,19 +451,11 @@
 <span class="inline-code">TECH_STACK:</span> [打算用什麼技術/工具]
 <span class="inline-code">TIMELINE:</span> [預計多久完成，e.g. 2 weeks]
 
-請幫我：
-1. 把這個想法拆成 5-8 個清楚的 milestone
-2. 評估每個 milestone 的難度 (easy / medium / hard)
-3. 建議完成順序
-4. 給這個專案一個簡短有力的 tagline
-
-回覆格式：
+請幫我拆成 5-8 個清楚的 milestone，並回覆 JSON：
 {
   "name": "專案名稱",
   "tagline": "一句話說明",
-  "goals": [
-    {"text": "milestone 描述", "difficulty": "easy|medium|hard"}
-  ],
+  "goals": [{"text": "milestone", "difficulty": "easy|medium|hard"}],
   "estimated_days": 數字,
   "tech": ["tech1", "tech2"]
 }
@@ -653,12 +463,12 @@
 <span class="highlight">===========================</span></div>
       </div>
 
-      <div class="prompt-block">
-        <div class="prompt-header">
-          <span class="prompt-title">🔍 Blocker Debug Prompt</span>
+      <div class="box">
+        <div class="box-header">
+          <span class="box-title">🔍 Blocker Debug Prompt</span>
           <button class="btn btn-sm" onclick="copyPrompt('debug-prompt')">Copy</button>
         </div>
-        <div class="prompt-body" id="debug-prompt">我在 vibe coding 專案遇到卡關，請幫我：
+        <div class="prompt-body" id="debug-prompt">我在 vibe coding 專案遇到卡關：
 
 <span class="highlight">===== BLOCKER DEBUG =====</span>
 
@@ -668,11 +478,6 @@
 <span class="inline-code">EXPECTED:</span> [我預期它應該做什麼]
 <span class="inline-code">CURRENT_CODE:</span> [相關程式碼片段]
 
-請給我：
-1. 問題可能的原因（列 2-3 個）
-2. 最可能的解法（step by step）
-3. 預防同類問題的建議
-
 <span class="highlight">=========================</span></div>
       </div>
     </div>
@@ -680,7 +485,7 @@
   </main>
 </div>
 
-<!-- Project Detail Panel -->
+<!-- Detail Panel -->
 <div class="detail-panel" id="detail-panel">
   <div class="detail-close" onclick="closeDetail()">✕</div>
   <div id="detail-content"></div>
@@ -713,7 +518,7 @@
         <select class="form-select" id="proj-color">
           <option value="purple">Purple</option>
           <option value="green">Green</option>
-          <option value="cyan">Cyan</option>
+          <option value="cyan">Blue</option>
           <option value="amber">Amber</option>
           <option value="pink">Pink</option>
         </select>
@@ -722,7 +527,7 @@
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Progress %</label>
-        <input class="form-input" id="proj-progress" type="number" min="0" max="100" value="0" placeholder="0">
+        <input class="form-input" id="proj-progress" type="number" min="0" max="100" value="0">
       </div>
       <div class="form-group">
         <label class="form-label">Tech Stack (comma separated)</label>
@@ -740,7 +545,7 @@
   </div>
 </div>
 
-<!-- Add Log Modal -->
+<!-- Log Modal -->
 <div class="modal-overlay" id="modal-log">
   <div class="modal">
     <div class="modal-title">Log Update</div>
@@ -756,7 +561,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">What did you do today?</label>
-      <textarea class="form-textarea" id="log-text" placeholder="Built the login flow, fixed the API connection issue..."></textarea>
+      <textarea class="form-textarea" id="log-text" placeholder="Built the login flow, fixed the API issue..."></textarea>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -775,35 +580,26 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">✓ Copied!</div>
 
 <script>
-// ===== STORAGE =====
 const STORE_KEY = 'vibetrackerdata_v2';
 
 function loadData() {
-  try {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
+  try { const r = localStorage.getItem(STORE_KEY); if (r) return JSON.parse(r); } catch(e) {}
   return { projects: [], logs: [] };
 }
-
-function saveData(data) {
-  localStorage.setItem(STORE_KEY, JSON.stringify(data));
-}
+function saveData(data) { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
 let db = loadData();
 let editingProjectId = null;
 let currentDetailId = null;
 
-// ===== NAVIGATION =====
-function showPage(name) {
+function showPage(name, event) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  event.currentTarget.classList.add('active');
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
   renderPage(name);
 }
 
@@ -813,396 +609,361 @@ function renderPage(name) {
   if (name === 'log') renderLog();
 }
 
-// ===== OVERVIEW =====
 function renderOverview() {
   const { projects, logs } = db;
   const active = projects.filter(p => p.status === 'active').length;
   const ideas = projects.filter(p => p.status === 'idea').length;
-  const done = projects.filter(p => p.status === 'done').length;
-  const avgProg = projects.length ? Math.round(projects.reduce((a, p) => a + (p.progress || 0), 0) / projects.length) : 0;
-
-  document.getElementById('overview-subtitle').textContent =
-    `${projects.length} projects · ${logs.length} updates logged`;
-
+  const avgProg = projects.length ? Math.round(projects.reduce((a,p) => a+(p.progress||0),0)/projects.length) : 0;
+  document.getElementById('overview-subtitle').textContent = `${projects.length} projects · ${logs.length} updates logged`;
   document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-label">Total Projects</div>
-      <div class="stat-value">${projects.length}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Active</div>
-      <div class="stat-value" style="color:var(--green)">${active}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Ideas</div>
-      <div class="stat-value" style="color:var(--accent2)">${ideas}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Avg Progress</div>
-      <div class="stat-value" style="color:var(--cyan)">${avgProg}%</div>
-    </div>
+    <div class="stat-card"><div class="stat-label">Total Projects</div><div class="stat-value">${projects.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value" style="color:var(--green)">${active}</div></div>
+    <div class="stat-card"><div class="stat-label">Ideas</div><div class="stat-value" style="color:var(--purple)">${ideas}</div></div>
+    <div class="stat-card"><div class="stat-label">Avg Progress</div><div class="stat-value" style="color:var(--accent)">${avgProg}%</div></div>
   `;
-
-  const colors = { purple:'#7c6dfa', green:'#3dd68c', amber:'#f5a623', cyan:'#4dd9e8', pink:'#f06292' };
-  const bars = projects.length ? projects.map(p => `
-    <div class="overview-project-row" onclick="openDetail('${p.id}')" style="cursor:pointer">
+  const colors = { purple:'#8250df', green:'#1a7f37', amber:'#9a6700', cyan:'#0969da', pink:'#bf3989' };
+  document.getElementById('overview-bars').innerHTML = projects.length ? projects.map(p => `
+    <div class="overview-project-row" onclick="openDetail('${p.id}')">
       <div class="overview-name">${escHtml(p.name)}</div>
-      <div class="overview-bar-track">
-        <div class="overview-bar-fill" style="width:${p.progress||0}%; background:${colors[p.color]||'#7c6dfa'}"></div>
-      </div>
+      <div class="overview-bar-track"><div class="overview-bar-fill" style="width:${p.progress||0}%;background:${colors[p.color]||'#0969da'}"></div></div>
       <div class="overview-pct">${p.progress||0}%</div>
     </div>
-  `).join('') : '<div style="color:var(--text3);font-size:12px;padding:8px 0">No projects yet — create one!</div>';
+  `).join('') : '<div style="color:var(--text3);font-size:13px;padding:8px 0">No projects yet — create one!</div>';
 
-  document.getElementById('overview-bars').innerHTML = bars;
-
-  const recent = [...logs].sort((a,b) => b.date > a.date ? 1 : -1).slice(0, 5);
-  const proj = id => db.projects.find(p => p.id === id);
+  const recent = [...logs].sort((a,b) => b.date>a.date?1:-1).slice(0,5);
+  const proj = id => db.projects.find(p => p.id===id);
   document.getElementById('recent-log').innerHTML = recent.length ? `
-    <div class="prompt-block">
-      <div class="prompt-header"><span class="prompt-title">Recent Updates</span></div>
+    <div class="box">
+      <div class="box-header"><span class="box-title">Recent Updates</span></div>
       <div style="overflow-x:auto">
         <table class="log-table">
           <thead><tr><th>Date</th><th>Project</th><th>Update</th></tr></thead>
           <tbody>${recent.map(l => {
             const p = proj(l.projectId);
-            return `<tr>
-              <td class="log-date">${l.date}</td>
-              <td><span class="log-project-chip">${p ? escHtml(p.name) : '?'}</span></td>
-              <td class="log-content">${escHtml(l.text)}</td>
-            </tr>`;
+            return `<tr><td class="log-date">${l.date}</td><td><span class="log-chip">${p?escHtml(p.name):'?'}</span></td><td class="log-content">${escHtml(l.text)}</td></tr>`;
           }).join('')}</tbody>
         </table>
       </div>
-    </div>
-  ` : '<div style="color:var(--text3);font-size:12px">No updates logged yet.</div>';
+    </div>` : '<div style="color:var(--text3);font-size:13px">No updates logged yet.</div>';
 }
 
-// ===== PROJECTS =====
 function renderProjects() {
   const grid = document.getElementById('projects-grid');
   if (!db.projects.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-      <div class="empty-icon">◫</div>
-      <div class="empty-title">No projects yet</div>
-      <div class="empty-sub">Click "New Project" to add your first vibe coding idea.</div>
-    </div>`;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">◱</div><div class="empty-title">No projects yet</div><div class="empty-sub">Click "New Project" to add your first vibe coding idea.</div></div>`;
     return;
   }
-
-  const statusLabel = { active:'Active', paused:'Paused', idea:'Idea', done:'Done' };
-  const statusClass = { active:'status-active', paused:'status-paused', idea:'status-idea', done:'status-done' };
-
+  const sl = { active:'Active', paused:'Paused', idea:'Idea', done:'Done' };
+  const sc = { active:'badge-active', paused:'badge-paused', idea:'badge-idea', done:'badge-done' };
   grid.innerHTML = db.projects.map(p => {
-    const goals = p.goals || [];
-    const doneGoals = goals.filter(g => g.done).length;
-    return `
-    <div class="project-card" data-color="${p.color||'purple'}" onclick="openDetail('${p.id}')">
-      <div class="card-header">
-        <div class="card-name">${escHtml(p.name)}</div>
-        <span class="status-badge ${statusClass[p.status]||'status-idea'}">${statusLabel[p.status]||'Idea'}</span>
-      </div>
+    const goals = p.goals||[]; const dg = goals.filter(g=>g.done).length;
+    return `<div class="project-card" data-color="${p.color||'cyan'}" onclick="openDetail('${p.id}')">
+      <div class="card-header"><div class="card-name">${escHtml(p.name)}</div><span class="badge ${sc[p.status]||'badge-idea'}">${sl[p.status]||'Idea'}</span></div>
       <div class="card-desc">${escHtml(p.desc||'No description')}</div>
       <div class="progress-wrap">
-        <div class="progress-header">
-          <span class="progress-label">Progress</span>
-          <span class="progress-pct">${p.progress||0}%</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width:${p.progress||0}%"></div>
-        </div>
+        <div class="progress-header"><span class="progress-label">Progress</span><span class="progress-pct">${p.progress||0}%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${p.progress||0}%"></div></div>
       </div>
-      <div class="card-meta">
-        <span class="card-tag">◈ ${doneGoals}/${goals.length} goals</span>
-        ${p.tech && p.tech.length ? `<span class="card-tag">⟨⟩ ${p.tech.slice(0,2).map(escHtml).join(', ')}</span>` : ''}
-      </div>
+      <div class="card-meta"><span>◈ ${dg}/${goals.length} goals</span>${p.tech&&p.tech.length?`<span>⟨⟩ ${p.tech.slice(0,2).map(escHtml).join(', ')}</span>`:''}</div>
     </div>`;
   }).join('');
 }
 
-// ===== PROJECT DETAIL =====
 function openDetail(id) {
-  const p = db.projects.find(x => x.id === id);
-  if (!p) return;
+  const p = db.projects.find(x=>x.id===id); if (!p) return;
   currentDetailId = id;
+  const sl = { active:'🟢 Active', paused:'⏸ Paused', idea:'💡 Idea', done:'✅ Done' };
+  const colors = { purple:'#8250df', green:'#1a7f37', amber:'#9a6700', cyan:'#0969da', pink:'#bf3989' };
+  const color = colors[p.color]||'#0969da';
+  const logs = db.logs.filter(l=>l.projectId===id).sort((a,b)=>b.date>a.date?1:-1);
 
-  const statusLabel = { active:'🟢 Active', paused:'⏸ Paused', idea:'💡 Idea', done:'✅ Done' };
-  const colors = { purple:'var(--accent)', green:'var(--green)', amber:'var(--amber)', cyan:'var(--cyan)', pink:'var(--pink)' };
-  const color = colors[p.color] || 'var(--accent)';
+  // Goals
+  const goalsList = (p.goals||[]).map((g,i) => `
+    <div class="goal-item" onclick="toggleGoal('${id}',${i})">
+      <div class="goal-check ${g.done?'done':''}">${g.done?'✓':''}</div>
+      <span class="${g.done?'goal-done':''}">${escHtml(g.text)}</span>
+    </div>`).join('');
 
-  const logs = db.logs.filter(l => l.projectId === id).sort((a,b) => b.date > a.date ? 1 : -1);
+  // Kanban board
+  const cols = ['todo','doing','done'];
+  const colLabels = { todo:'To Do', doing:'In Progress', done:'Done' };
+  const kanban = p.kanban || {};
+  const kanbanHTML = cols.map(col => {
+    const items = (kanban[col]||[]);
+    const itemsHTML = items.map((t,i) => `
+      <div class="kanban-item">
+        <span>${escHtml(t)}</span>
+        <span class="kanban-item-del" onclick="deleteKanban('${id}','${col}',${i})">✕</span>
+      </div>`).join('');
+    return `<div class="kanban-col">
+      <div class="kanban-col-title">${colLabels[col]}</div>
+      ${itemsHTML}
+      <button class="kanban-add" onclick="addKanban('${id}','${col}')">＋ Add</button>
+    </div>`;
+  }).join('');
 
-  const goalsList = (p.goals||[]).map((g, i) => `
-    <div class="goal-item" onclick="toggleGoal('${id}', ${i})">
-      <div class="goal-check ${g.done ? 'done' : ''}">${g.done ? '✓' : ''}</div>
-      <span class="${g.done ? 'goal-done' : ''}">${escHtml(g.text)}</span>
-    </div>
-  `).join('');
+  // Links
+  const links = p.links || [];
+  const linksHTML = links.map((l,i) => `
+    <div class="link-item">
+      <span class="link-label">${escHtml(l.label||'Link')}</span>
+      <a href="${escHtml(l.url)}" target="_blank">${escHtml(l.url)}</a>
+      <span style="color:var(--text3);cursor:pointer;font-size:11px" onclick="deleteLink('${id}',${i})">✕</span>
+    </div>`).join('');
 
+  // Recent logs
   const recentLogs = logs.slice(0,5).map(l => `
-    <div style="padding:8px 0; border-bottom:1px solid var(--border); font-size:11px; color:var(--text2); line-height:1.5">
+    <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.5">
       <span style="color:var(--text3)">${l.date}</span>
-      ${l.progress !== undefined ? `<span class="log-delta" style="margin-left:6px">→${l.progress}%</span>` : ''}
-      <div style="margin-top:3px">${escHtml(l.text)}</div>
-    </div>
-  `).join('');
+      ${l.progress!==undefined?`<span style="color:var(--green);font-weight:600;margin-left:6px">→ ${l.progress}%</span>`:''}
+      <div style="margin-top:2px;color:var(--text)">${escHtml(l.text)}</div>
+    </div>`).join('');
 
   document.getElementById('detail-content').innerHTML = `
-    <div style="width:100%; height:3px; background:${color}; border-radius:4px; margin-bottom:20px"></div>
+    <div style="height:3px;background:${color};border-radius:4px;margin-bottom:16px"></div>
     <div class="detail-name">${escHtml(p.name)}</div>
-    <div style="margin-bottom:16px; display:flex; gap:8px; align-items:center; flex-wrap:wrap">
-      <span style="font-size:12px; color:var(--text2)">${statusLabel[p.status]||'Idea'}</span>
-      ${p.tech && p.tech.length ? p.tech.map(t => `<span class="tag">${escHtml(t)}</span>`).join('') : ''}
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <span style="font-size:12px;color:var(--text2)">${sl[p.status]||'Idea'}</span>
+      ${p.tech&&p.tech.length?p.tech.map(t=>`<span class="tag">${escHtml(t)}</span>`).join(''):''}
     </div>
-    <div style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:16px">${escHtml(p.desc||'')}</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px">${escHtml(p.desc||'')}</div>
 
     <div class="progress-wrap">
-      <div class="progress-header">
-        <span class="progress-label">Overall Progress</span>
-        <span class="progress-pct" style="color:${color}">${p.progress||0}%</span>
-      </div>
-      <div class="progress-track" style="height:8px">
-        <div class="progress-fill" style="width:${p.progress||0}%; background:${color}"></div>
-      </div>
+      <div class="progress-header"><span class="progress-label">Overall Progress</span><span class="progress-pct" style="color:${color}">${p.progress||0}%</span></div>
+      <div class="progress-track" style="height:8px"><div class="progress-fill" style="width:${p.progress||0}%;background:${color}"></div></div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Task Board</div>
+      <div class="kanban-wrap">${kanbanHTML}</div>
     </div>
 
     <div class="detail-section">
       <div class="detail-section-title">Goals & Milestones</div>
-      <div class="goals-list">${goalsList || '<div style="color:var(--text3);font-size:11px">No goals added</div>'}</div>
+      <div>${goalsList||'<div style="color:var(--text3);font-size:12px">No goals added</div>'}</div>
       <div class="add-goal-input">
-        <input id="new-goal-text" placeholder="Add new goal..." onkeydown="if(event.key==='Enter')addGoal('${id}')">
+        <input id="new-goal-text" placeholder="Add new milestone..." onkeydown="if(event.key==='Enter')addGoal('${id}')">
         <button class="btn btn-sm btn-primary" onclick="addGoal('${id}')">Add</button>
       </div>
     </div>
 
     <div class="detail-section">
-      <div class="detail-section-title">Recent Updates (${logs.length} total)</div>
-      ${recentLogs || '<div style="color:var(--text3);font-size:11px">No updates logged yet</div>'}
+      <div class="detail-section-title">Notes</div>
+      <textarea class="notes-area" id="notes-area" placeholder="Technical decisions, ideas, references, anything...">${escHtml(p.notes||'')}</textarea>
+      <div class="notes-save-row">
+        <button class="btn btn-sm btn-primary" onclick="saveNotes('${id}')">Save Notes</button>
+      </div>
     </div>
 
-    <div class="detail-section" style="display:flex; gap:8px; flex-wrap:wrap">
+    <div class="detail-section">
+      <div class="detail-section-title">Links & Resources</div>
+      <div id="links-list">${linksHTML||'<div style="color:var(--text3);font-size:12px;margin-bottom:8px">No links added</div>'}</div>
+      <div class="add-link-row">
+        <input id="link-label" placeholder="Label (e.g. GitHub)" style="width:90px;flex:none">
+        <input id="link-url" placeholder="https://..." style="flex:1">
+        <button class="btn btn-sm btn-primary" onclick="addLink('${id}')">Add</button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Claude Code Prompt</div>
+      <button class="prompt-copy-btn" onclick="copyProjectPrompt('${id}')">
+        ⌘ Copy Update Prompt for "${escHtml(p.name)}"
+      </button>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-title">Recent Updates (${logs.length} total)</div>
+      ${recentLogs||'<div style="color:var(--text3);font-size:12px">No updates yet</div>'}
+    </div>
+
+    <div class="detail-section" style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-sm" onclick="openEditProject('${id}')">✏ Edit</button>
       <button class="btn btn-sm btn-primary" onclick="openAddLog('${id}')">＋ Log Update</button>
       <button class="btn btn-sm btn-danger" onclick="deleteProject('${id}')">✕ Delete</button>
-    </div>
-  `;
-
+    </div>`;
   document.getElementById('detail-panel').classList.add('open');
 }
 
-function closeDetail() {
-  document.getElementById('detail-panel').classList.remove('open');
-  currentDetailId = null;
+function closeDetail() { document.getElementById('detail-panel').classList.remove('open'); currentDetailId=null; }
+
+function toggleGoal(pid,i) {
+  const p=db.projects.find(x=>x.id===pid); if(!p||!p.goals)return;
+  p.goals[i].done=!p.goals[i].done; saveData(db); openDetail(pid); renderProjects();
 }
 
-function toggleGoal(projectId, index) {
-  const p = db.projects.find(x => x.id === projectId);
-  if (!p || !p.goals) return;
-  p.goals[index].done = !p.goals[index].done;
-  saveData(db);
-  openDetail(projectId);
-  renderProjects();
+function addGoal(pid) {
+  const inp=document.getElementById('new-goal-text'); const t=inp.value.trim(); if(!t)return;
+  const p=db.projects.find(x=>x.id===pid); if(!p)return;
+  if(!p.goals)p.goals=[];
+  p.goals.push({text:t,done:false}); saveData(db); inp.value=''; openDetail(pid); renderProjects();
 }
 
-function addGoal(projectId) {
-  const input = document.getElementById('new-goal-text');
-  const text = input.value.trim();
-  if (!text) return;
-  const p = db.projects.find(x => x.id === projectId);
-  if (!p) return;
-  if (!p.goals) p.goals = [];
-  p.goals.push({ text, done: false });
-  saveData(db);
-  input.value = '';
-  openDetail(projectId);
-  renderProjects();
-}
-
-// ===== LOG =====
 function renderLog() {
-  const tbody = document.getElementById('log-tbody');
-  const sorted = [...db.logs].sort((a,b) => b.date > a.date ? 1 : -1);
-  if (!sorted.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text3)">No updates logged yet. Click "+ Log Update" to start!</td></tr>`;
-    return;
-  }
-  const proj = id => db.projects.find(p => p.id === id);
-  tbody.innerHTML = sorted.map(l => {
-    const p = proj(l.projectId);
+  const tbody=document.getElementById('log-tbody');
+  const sorted=[...db.logs].sort((a,b)=>b.date>a.date?1:-1);
+  if(!sorted.length){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text3)">No updates yet. Click "+ Log Update" to start!</td></tr>`;return;}
+  const proj=id=>db.projects.find(p=>p.id===id);
+  tbody.innerHTML=sorted.map(l=>{
+    const p=proj(l.projectId);
     return `<tr>
       <td class="log-date">${l.date}</td>
-      <td><span class="log-project-chip">${p ? escHtml(p.name) : 'Unknown'}</span></td>
+      <td><span class="log-chip">${p?escHtml(p.name):'Unknown'}</span></td>
       <td class="log-content">${escHtml(l.text)}</td>
-      <td class="log-delta">${l.progress !== undefined ? `${l.progress}%` : '—'}</td>
+      <td class="log-delta">${l.progress!==undefined?`${l.progress}%`:'—'}</td>
       <td><button class="btn btn-sm btn-danger" onclick="deleteLog('${l.id}')">✕</button></td>
     </tr>`;
   }).join('');
 }
 
-// ===== MODALS =====
 function openAddProject() {
-  editingProjectId = null;
-  document.getElementById('modal-project-title').textContent = 'New Project';
-  document.getElementById('proj-name').value = '';
-  document.getElementById('proj-desc').value = '';
-  document.getElementById('proj-status').value = 'active';
-  document.getElementById('proj-color').value = 'purple';
-  document.getElementById('proj-progress').value = '0';
-  document.getElementById('proj-tech').value = '';
-  document.getElementById('proj-goals').value = '';
+  editingProjectId=null;
+  document.getElementById('modal-project-title').textContent='New Project';
+  ['proj-name','proj-desc','proj-tech','proj-goals'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('proj-status').value='active';
+  document.getElementById('proj-color').value='cyan';
+  document.getElementById('proj-progress').value='0';
   document.getElementById('modal-project').classList.add('open');
 }
 
 function openEditProject(id) {
-  const p = db.projects.find(x => x.id === id);
-  if (!p) return;
-  editingProjectId = id;
-  document.getElementById('modal-project-title').textContent = 'Edit Project';
-  document.getElementById('proj-name').value = p.name || '';
-  document.getElementById('proj-desc').value = p.desc || '';
-  document.getElementById('proj-status').value = p.status || 'idea';
-  document.getElementById('proj-color').value = p.color || 'purple';
-  document.getElementById('proj-progress').value = p.progress || 0;
-  document.getElementById('proj-tech').value = (p.tech||[]).join(', ');
-  document.getElementById('proj-goals').value = (p.goals||[]).map(g => g.text).join('\n');
+  const p=db.projects.find(x=>x.id===id); if(!p)return;
+  editingProjectId=id;
+  document.getElementById('modal-project-title').textContent='Edit Project';
+  document.getElementById('proj-name').value=p.name||'';
+  document.getElementById('proj-desc').value=p.desc||'';
+  document.getElementById('proj-status').value=p.status||'idea';
+  document.getElementById('proj-color').value=p.color||'cyan';
+  document.getElementById('proj-progress').value=p.progress||0;
+  document.getElementById('proj-tech').value=(p.tech||[]).join(', ');
+  document.getElementById('proj-goals').value=(p.goals||[]).map(g=>g.text).join('\n');
   document.getElementById('modal-project').classList.add('open');
 }
 
 function saveProject() {
-  const name = document.getElementById('proj-name').value.trim();
-  if (!name) { alert('Project name is required'); return; }
-
-  const goalsRaw = document.getElementById('proj-goals').value.trim();
-  const newGoalTexts = goalsRaw ? goalsRaw.split('\n').map(l => l.trim()).filter(Boolean) : [];
-
-  if (editingProjectId) {
-    const p = db.projects.find(x => x.id === editingProjectId);
-    const existingGoals = p.goals || [];
-    // Merge: keep existing with done status, add new
-    const merged = newGoalTexts.map(text => {
-      const existing = existingGoals.find(g => g.text === text);
-      return existing || { text, done: false };
-    });
-    p.name = name;
-    p.desc = document.getElementById('proj-desc').value.trim();
-    p.status = document.getElementById('proj-status').value;
-    p.color = document.getElementById('proj-color').value;
-    p.progress = parseInt(document.getElementById('proj-progress').value) || 0;
-    p.tech = document.getElementById('proj-tech').value.split(',').map(t=>t.trim()).filter(Boolean);
-    p.goals = merged;
+  const name=document.getElementById('proj-name').value.trim();
+  if(!name){alert('Project name is required');return;}
+  const goalsRaw=document.getElementById('proj-goals').value.trim();
+  const newGoalTexts=goalsRaw?goalsRaw.split('\n').map(l=>l.trim()).filter(Boolean):[];
+  if(editingProjectId){
+    const p=db.projects.find(x=>x.id===editingProjectId);
+    const ex=p.goals||[];
+    p.name=name; p.desc=document.getElementById('proj-desc').value.trim();
+    p.status=document.getElementById('proj-status').value;
+    p.color=document.getElementById('proj-color').value;
+    p.progress=parseInt(document.getElementById('proj-progress').value)||0;
+    p.tech=document.getElementById('proj-tech').value.split(',').map(t=>t.trim()).filter(Boolean);
+    p.goals=newGoalTexts.map(t=>{const e=ex.find(g=>g.text===t);return e||{text:t,done:false};});
   } else {
-    db.projects.push({
-      id: 'p_' + Date.now(),
-      name,
-      desc: document.getElementById('proj-desc').value.trim(),
-      status: document.getElementById('proj-status').value,
-      color: document.getElementById('proj-color').value,
-      progress: parseInt(document.getElementById('proj-progress').value) || 0,
-      tech: document.getElementById('proj-tech').value.split(',').map(t=>t.trim()).filter(Boolean),
-      goals: newGoalTexts.map(text => ({ text, done: false })),
-      createdAt: new Date().toISOString()
-    });
+    db.projects.push({id:'p_'+Date.now(),name,desc:document.getElementById('proj-desc').value.trim(),status:document.getElementById('proj-status').value,color:document.getElementById('proj-color').value,progress:parseInt(document.getElementById('proj-progress').value)||0,tech:document.getElementById('proj-tech').value.split(',').map(t=>t.trim()).filter(Boolean),goals:newGoalTexts.map(t=>({text:t,done:false})),createdAt:new Date().toISOString()});
   }
-
-  saveData(db);
-  closeModal('modal-project');
-  renderProjects();
-  renderOverview();
-  if (currentDetailId) openDetail(currentDetailId);
+  saveData(db); closeModal('modal-project'); renderProjects(); renderOverview();
+  if(currentDetailId)openDetail(currentDetailId);
 }
 
 function openAddLog(projectId) {
-  const sel = document.getElementById('log-project');
-  sel.innerHTML = db.projects.map(p =>
-    `<option value="${p.id}" ${p.id === projectId ? 'selected' : ''}>${escHtml(p.name)}</option>`
-  ).join('');
-  document.getElementById('log-date').value = new Date().toISOString().slice(0, 10);
-  document.getElementById('log-text').value = '';
-  document.getElementById('log-progress').value = '';
-  document.getElementById('log-next').value = '';
+  const sel=document.getElementById('log-project');
+  sel.innerHTML=db.projects.map(p=>`<option value="${p.id}"${p.id===projectId?' selected':''}>${escHtml(p.name)}</option>`).join('');
+  document.getElementById('log-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('log-text').value='';
+  document.getElementById('log-progress').value='';
+  document.getElementById('log-next').value='';
   closeModal('modal-project');
   document.getElementById('modal-log').classList.add('open');
 }
 
 function saveLog() {
-  const projectId = document.getElementById('log-project').value;
-  const text = document.getElementById('log-text').value.trim();
-  const date = document.getElementById('log-date').value;
-  if (!text || !projectId || !date) { alert('Please fill in all fields'); return; }
-
-  const progress = document.getElementById('log-progress').value;
-  const next = document.getElementById('log-next').value.trim();
-
-  const log = {
-    id: 'l_' + Date.now(),
-    projectId,
-    date,
-    text,
-    next,
-    progress: progress !== '' ? parseInt(progress) : undefined
-  };
-
-  db.logs.push(log);
-
-  // Update project progress if provided
-  if (progress !== '') {
-    const p = db.projects.find(x => x.id === projectId);
-    if (p) p.progress = parseInt(progress);
-  }
-
-  saveData(db);
-  closeModal('modal-log');
-  renderLog();
-  renderOverview();
-  renderProjects();
-  if (currentDetailId) openDetail(currentDetailId);
+  const projectId=document.getElementById('log-project').value;
+  const text=document.getElementById('log-text').value.trim();
+  const date=document.getElementById('log-date').value;
+  if(!text||!projectId||!date){alert('Please fill in all fields');return;}
+  const progress=document.getElementById('log-progress').value;
+  db.logs.push({id:'l_'+Date.now(),projectId,date,text,next:document.getElementById('log-next').value.trim(),progress:progress!==''?parseInt(progress):undefined});
+  if(progress!==''){const p=db.projects.find(x=>x.id===projectId);if(p)p.progress=parseInt(progress);}
+  saveData(db); closeModal('modal-log'); renderLog(); renderOverview(); renderProjects();
+  if(currentDetailId)openDetail(currentDetailId);
 }
 
 function deleteProject(id) {
-  if (!confirm('Delete this project? This cannot be undone.')) return;
-  db.projects = db.projects.filter(p => p.id !== id);
-  db.logs = db.logs.filter(l => l.projectId !== id);
-  saveData(db);
-  closeDetail();
-  renderProjects();
-  renderOverview();
+  if(!confirm('Delete this project?'))return;
+  db.projects=db.projects.filter(p=>p.id!==id);
+  db.logs=db.logs.filter(l=>l.projectId!==id);
+  saveData(db); closeDetail(); renderProjects(); renderOverview();
 }
 
 function deleteLog(id) {
-  if (!confirm('Delete this log entry?')) return;
-  db.logs = db.logs.filter(l => l.id !== id);
-  saveData(db);
-  renderLog();
-  renderOverview();
+  if(!confirm('Delete this log entry?'))return;
+  db.logs=db.logs.filter(l=>l.id!==id); saveData(db); renderLog(); renderOverview();
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
 });
 
-// ===== PROMPT COPY =====
 function copyPrompt(id) {
-  const el = document.getElementById(id);
-  const text = el.innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    const t = document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
+  const t=document.getElementById('toast');
+  navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>{
+    t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000);
   });
 }
 
-// ===== UTILS =====
-function escHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function escHtml(s) {
+  if(!s)return'';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ===== INIT =====
+// ===== NOTES =====
+function saveNotes(id) {
+  const p=db.projects.find(x=>x.id===id); if(!p)return;
+  p.notes=document.getElementById('notes-area').value;
+  saveData(db);
+  const t=document.getElementById('toast'); t.textContent='✓ Notes saved!';
+  t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.textContent='✓ Copied!';},1500);
+}
+
+// ===== LINKS =====
+function addLink(id) {
+  const label=document.getElementById('link-label').value.trim()||'Link';
+  const url=document.getElementById('link-url').value.trim();
+  if(!url)return;
+  const p=db.projects.find(x=>x.id===id); if(!p)return;
+  if(!p.links)p.links=[];
+  p.links.push({label,url}); saveData(db);
+  document.getElementById('link-label').value='';
+  document.getElementById('link-url').value='';
+  openDetail(id);
+}
+function deleteLink(id,i) {
+  const p=db.projects.find(x=>x.id===id); if(!p||!p.links)return;
+  p.links.splice(i,1); saveData(db); openDetail(id);
+}
+
+// ===== KANBAN =====
+function addKanban(id, col) {
+  const text=prompt('New task:'); if(!text||!text.trim())return;
+  const p=db.projects.find(x=>x.id===id); if(!p)return;
+  if(!p.kanban)p.kanban={};
+  if(!p.kanban[col])p.kanban[col]=[];
+  p.kanban[col].push(text.trim()); saveData(db); openDetail(id);
+}
+function deleteKanban(id,col,i) {
+  const p=db.projects.find(x=>x.id===id); if(!p||!p.kanban||!p.kanban[col])return;
+  p.kanban[col].splice(i,1); saveData(db); openDetail(id);
+}
+
+// ===== PER-PROJECT PROMPT =====
+function copyProjectPrompt(id) {
+  const p=db.projects.find(x=>x.id===id); if(!p)return;
+  const goals=(p.goals||[]).filter(g=>!g.done).map(g=>g.text).join(', ')||'none';
+  const promptText=`你是我的 vibe coding 專案助手。請幫我更新這個專案的進度：\n\nPROJECT_NAME: ${p.name}\nTODAY_UPDATE: [今天做了什麼，1-3 句話]\nBLOCKERS: [遇到的問題或卡關點，沒有就填 none]\nNEXT_STEP: [下一步要做什麼]\nPROGRESS_PCT: [目前整體完成度，現在是 ${p.progress||0}%]\nGOALS_COMPLETED: [今天完成的 milestone，用逗號分隔]\n\n目前未完成的 goals：${goals}\n\n請回覆 JSON：\n{\n  "project": "${p.name}",\n  "date": "YYYY-MM-DD",\n  "summary": "簡短摘要",\n  "update_text": "today_update 的內容",\n  "progress": 數字,\n  "goals_done": ["goal1"],\n  "next": "下一步"\n}`;
+  navigator.clipboard.writeText(promptText).then(()=>{
+    const t=document.getElementById('toast'); t.textContent='✓ Prompt copied!';
+    t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.textContent='✓ Copied!';},2000);
+  });
+}
+
 renderOverview();
 </script>
 </body>
