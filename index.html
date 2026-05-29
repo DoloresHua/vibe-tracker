@@ -336,7 +336,14 @@
         <span class="nav-icon">⌘</span> Agent Prompt
       </div>
     </div>
-    <div class="sidebar-footer">vibe coding tracker v1.0 · persistent & shareable</div>
+    <div class="sidebar-footer">
+      <div style="display:flex;gap:6px;margin-bottom:10px">
+        <button class="btn btn-sm" style="flex:1;justify-content:center" onclick="exportData()">↑ Export</button>
+        <button class="btn btn-sm" style="flex:1;justify-content:center" onclick="document.getElementById('import-input').click()">↓ Import</button>
+        <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      vibe coding tracker v1.0 · persistent & shareable
+    </div>
   </nav>
 
   <main class="main">
@@ -922,7 +929,43 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ===== NOTES =====
+// ===== EXPORT / IMPORT =====
+function exportData() {
+  const json = JSON.stringify(db, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `vibetracker-backup-${date}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  const t=document.getElementById('toast'); t.textContent='✓ Exported!';
+  t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.textContent='✓ Copied!';},2000);
+}
+
+function importData(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      if (!parsed.projects || !parsed.logs) throw new Error('Invalid format');
+      if (!confirm(`Import ${parsed.projects.length} projects and ${parsed.logs.length} logs?\n\nThis will REPLACE your current data.`)) return;
+      db = parsed;
+      saveData(db);
+      renderOverview();
+      renderProjects();
+      const t=document.getElementById('toast'); t.textContent=`✓ Imported ${parsed.projects.length} projects!`;
+      t.classList.add('show'); setTimeout(()=>{t.classList.remove('show');t.textContent='✓ Copied!';},2500);
+    } catch(err) {
+      alert('Invalid backup file. Please use a VibeTRACKER export JSON.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ===== EXPORT / IMPORT END =====
+
 function saveNotes(id) {
   const p=db.projects.find(x=>x.id===id); if(!p)return;
   p.notes=document.getElementById('notes-area').value;
