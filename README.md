@@ -1,5 +1,3 @@
-# vibe-tracker
-Personal vibe coding project tracker — progress bars, daily logs &amp; agent prompts
 # VibeTRACKER 🎯
 
 > Personal vibe coding project OS — track ideas, progress, and daily updates in one place.
@@ -22,7 +20,7 @@ VibeTRACKER is a single-page dashboard for managing vibe coding projects. Built 
 ### ◫ Project Management
 - Add / edit / delete projects
 - Status tags: Active, Paused, Idea, Done
-- Color themes per project (purple, green, cyan, amber, pink)
+- Color themes per project (purple, green, blue, amber, pink)
 - Tech stack tags
 - Per-project progress percentage
 
@@ -31,7 +29,22 @@ VibeTRACKER is a single-page dashboard for managing vibe coding projects. Built 
 - Toggle done/undone
 - Add new goals inline from the detail panel
 
-### 📝 Daily Update Log
+### 🗂 Task Board (per project)
+- Lightweight Trello-style kanban inside each project
+- Three columns: To Do / In Progress / Done
+- Add and delete tasks inline
+
+### 📝 Notes (per project)
+- Free-form notes area inside each project detail panel
+- Save anytime — technical decisions, ideas, references, anything
+- Persists in localStorage
+
+### 🔗 Links & Resources (per project)
+- Add labeled links (GitHub repo, demo URL, references)
+- Opens in new tab
+- Delete links inline
+
+### 📋 Daily Update Log
 - Date + project + update text + progress delta
 - Full log table with delete support
 - Recent updates shown on Overview page
@@ -41,7 +54,7 @@ VibeTRACKER is a single-page dashboard for managing vibe coding projects. Built 
   - **Progress Update** — structured daily update → returns JSON
   - **Project Kickoff** — idea → milestone breakdown
   - **Blocker Debug** — stuck? get unstuck
-- One-click copy to clipboard
+- **Per-project prompt button** in each project detail panel — auto-fills project name and remaining goals, ready to paste into Claude Code
 
 ---
 
@@ -49,7 +62,8 @@ VibeTRACKER is a single-page dashboard for managing vibe coding projects. Built 
 
 ```
 vibe-tracker/
-└── index.html        ← entire app (single file)
+├── index.html    ← entire app (single file)
+└── README.md
 ```
 
 Everything runs in one HTML file — no build step, no server, no dependencies.
@@ -57,7 +71,7 @@ Everything runs in one HTML file — no build step, no server, no dependencies.
 ### Tech Stack
 - **HTML / CSS / JavaScript** — vanilla, no frameworks
 - **localStorage** — all data persists in the browser
-- **Google Fonts** — JetBrains Mono + Syne
+- **Google Fonts** — Inter
 
 ### Data Structure
 
@@ -70,13 +84,23 @@ Everything runs in one HTML file — no build step, no server, no dependencies.
       name: "VibeTRACKER",
       desc: "Project description",
       status: "active",          // active | paused | idea | done
-      color: "purple",           // purple | green | cyan | amber | pink
+      color: "cyan",             // purple | green | cyan | amber | pink
       progress: 40,              // 0-100
       tech: ["HTML", "CSS", "JavaScript"],
       goals: [
         { text: "Build overview dashboard", done: true },
         { text: "Deploy to GitHub Pages", done: false }
       ],
+      notes: "Free-form project notes...",
+      links: [
+        { label: "GitHub", url: "https://github.com/..." },
+        { label: "Demo", url: "https://..." }
+      ],
+      kanban: {
+        todo: ["Set up auth", "Design landing page"],
+        doing: ["Build dashboard"],
+        done: ["Project setup"]
+      },
       createdAt: "2026-05-28T..."
     }
   ],
@@ -95,25 +119,28 @@ Everything runs in one HTML file — no build step, no server, no dependencies.
 
 ### Page Structure
 
-| Page | Route | Description |
-|------|-------|-------------|
-| Overview | `#overview` | Dashboard with stats + progress bars |
-| Projects | `#projects` | All project cards + detail panel |
-| Update Log | `#log` | Full log table |
-| Agent Prompt | `#prompt` | Claude Code prompt templates |
+| Page | Description |
+|------|-------------|
+| Overview | Dashboard with stats + progress bars |
+| Projects | All project cards + detail panel |
+| Update Log | Full log table |
+| Agent Prompt | Claude Code prompt templates |
 
 ---
 
 ## How to Use with Claude Code
 
-1. Go to the **Agent Prompt** page
-2. Copy the **Progress Update Prompt**
-3. Paste into Claude Code or claude.ai
-4. Fill in your project info
-5. Get back a JSON response
-6. Go to **+ Log Update** and fill in the details
+### Option A — Quick update (claude.ai)
+1. Open the project detail panel
+2. Click **"Copy Update Prompt"** — auto-fills project name + remaining goals
+3. Paste into claude.ai, fill in your update
+4. Get back a JSON response
+5. Go to **+ Log Update** and fill in the details
 
-### Standard Update Prompt
+### Option B — From terminal (Claude Code)
+Run Claude Code in your project folder and use the same prompt format. Paste the returned JSON into the Log Update form.
+
+### Standard Update Prompt Format
 
 ```
 PROJECT_NAME: [your project]
@@ -130,8 +157,12 @@ GOALS_COMPLETED: [milestones done today]
 
 - [x] Project management (add / edit / delete)
 - [x] Progress bars + milestone checklist
+- [x] Task board (kanban: To Do / In Progress / Done)
+- [x] Notes per project
+- [x] Links & resources per project
 - [x] Daily update log
 - [x] Agent prompt templates
+- [x] Per-project prompt button (auto-fills project context)
 - [x] Overview dashboard
 - [ ] Tag system (tech tags + vibe tags)
 - [ ] Blocker log
