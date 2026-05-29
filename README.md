@@ -56,6 +56,12 @@ VibeTRACKER is a single-page dashboard for managing vibe coding projects. Built 
   - **Blocker Debug** — stuck? get unstuck
 - **Per-project prompt button** in each project detail panel — auto-fills project name and remaining goals, ready to paste into Claude Code
 
+### 💾 Export / Import
+- Export all data as a dated JSON backup file
+- Import a backup to restore or sync data across devices
+- Prevents data loss if browser cache is cleared
+- Use to sync between local file and GitHub Pages
+
 ---
 
 ## Architecture
@@ -164,9 +170,9 @@ GOALS_COMPLETED: [milestones done today]
 - [x] Agent prompt templates
 - [x] Per-project prompt button (auto-fills project context)
 - [x] Overview dashboard
+- [x] Export / Import JSON backup
 - [ ] Tag system (tech tags + vibe tags)
 - [ ] Blocker log
-- [ ] JSON paste import from Claude Code
 - [ ] Export to shareable static page
 - [ ] Public profile toggle
 
