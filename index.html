@@ -285,10 +285,13 @@
 
   /* Kanban */
   .kanban-wrap { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
-  .kanban-col { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; min-height:80px; }
+  .kanban-col { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; min-height:80px; transition:background 0.15s, border-color 0.15s; }
+  .kanban-col.drag-over { background:var(--accent-bg); border-color:var(--accent); }
   .kanban-col-title { font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
-  .kanban-item { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:6px 8px; font-size:12px; color:var(--text); margin-bottom:6px; cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start; gap:4px; line-height:1.4; }
-  .kanban-item:hover { border-color:var(--border2); }
+  .kanban-item { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:6px 8px; font-size:12px; color:var(--text); margin-bottom:6px; cursor:grab; display:flex; justify-content:space-between; align-items:flex-start; gap:4px; line-height:1.4; user-select:none; }
+  .kanban-item:active { cursor:grabbing; }
+  .kanban-item:hover { border-color:var(--border2); box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+  .kanban-item.dragging { opacity:0.4; border-style:dashed; }
   .kanban-item-del { color:var(--text3); font-size:11px; cursor:pointer; flex-shrink:0; }
   .kanban-item-del:hover { color:var(--red); }
   .kanban-add { width:100%; border:1px dashed var(--border); border-radius:4px; padding:5px 8px; font-family:var(--font); font-size:12px; color:var(--text3); background:transparent; cursor:pointer; text-align:left; }
@@ -691,11 +694,16 @@ function openDetail(id) {
   const kanbanHTML = cols.map(col => {
     const items = (kanban[col]||[]);
     const itemsHTML = items.map((t,i) => `
-      <div class="kanban-item">
+      <div class="kanban-item" draggable="true"
+        ondragstart="kanbanDragStart(event,'${id}','${col}',${i})"
+        ondragend="kanbanDragEnd(event)">
         <span>${escHtml(t)}</span>
         <span class="kanban-item-del" onclick="deleteKanban('${id}','${col}',${i})">✕</span>
       </div>`).join('');
-    return `<div class="kanban-col">
+    return `<div class="kanban-col"
+      ondragover="kanbanDragOver(event)"
+      ondragleave="kanbanDragLeave(event)"
+      ondrop="kanbanDrop(event,'${id}','${col}')">
       <div class="kanban-col-title">${colLabels[col]}</div>
       ${itemsHTML}
       <button class="kanban-add" onclick="addKanban('${id}','${col}')">＋ Add</button>
@@ -938,6 +946,41 @@ function addLink(id) {
 function deleteLink(id,i) {
   const p=db.projects.find(x=>x.id===id); if(!p||!p.links)return;
   p.links.splice(i,1); saveData(db); openDetail(id);
+}
+
+// ===== KANBAN DRAG & DROP =====
+let dragSrc = null; // { projectId, col, index }
+
+function kanbanDragStart(e, pid, col, i) {
+  dragSrc = { pid, col, i };
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function kanbanDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+}
+function kanbanDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function kanbanDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function kanbanDrop(e, pid, targetCol) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!dragSrc || dragSrc.col === targetCol) return;
+  const p = db.projects.find(x => x.id === pid); if (!p) return;
+  if (!p.kanban) p.kanban = {};
+  const item = (p.kanban[dragSrc.col]||[]).splice(dragSrc.i, 1)[0];
+  if (!item) return;
+  if (!p.kanban[targetCol]) p.kanban[targetCol] = [];
+  p.kanban[targetCol].push(item);
+  dragSrc = null;
+  saveData(db);
+  openDetail(pid);
 }
 
 // ===== KANBAN =====
